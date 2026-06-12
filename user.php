@@ -1,3 +1,10 @@
+<?php
+  session_start();
+  require_once "koneksi.php";
+
+  // ambil data dari tbl user
+  $query = mysqli_query($conn,"SELECT * FROM users");
+?>
 
 <!DOCTYPE html>
 <html>
@@ -136,7 +143,36 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-<!-- disini -->
+            
+            <!-- Buat Tabel -->
+          <table id="example2" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Nama Lengkap</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
+                $no=1;
+                while($row = mysqli_fetch_assoc($query)){
+              ?>
+              <tr>
+                <td><?= $no++; ?></td>
+                <td><?= htmlspecialchars($row['username']); ?></td>
+                <td><?= htmlspecialchars($row['password']); ?></td>
+                <td><?= htmlspecialchars($row['nama_lengkap']); ?></td>
+                <td><?= htmlspecialchars($row['status']); ?></td>
+                <td></td>
+              </tr>
+              <?php } ?>
+            </tbody>  
+          </table>
+
             </div>
             <!-- /.card-body -->
           </div>

@@ -1,3 +1,27 @@
+<?php
+  session_start();
+  require_once "koneksi.php";
+  $error="";
+  
+  if(isset($_POST['login'])){
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    // cek user di database
+    $query = "SELECT * FROM users WHERE username='$username' AND PASSWORD='$password'";
+    $result = mysqli_query($conn, $query);
+
+    if(mysqli_num_rows($result)=== 1){
+      // jika ditemukan datanya
+      $_SESSION['login']=true;
+      $_SESSION['username']=$username;
+      header("Location: dashboard.php");
+      exit;
+    }else{
+      $error="Username atau password SALAH!";
+    }
+  }
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,9 +52,13 @@
     <div class="card-body login-card-body">
       <p class="login-box-msg">Sign in untuk masuk ke aplikasi</p>
 
+      <?php if($error != ""): ?>
+        <div class="error"><?= $error; ?></div>
+      <?php endif; ?>
+
       <form action="" method="post">
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Username">
+          <input type="text" name="username" class="form-control" placeholder="Username">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -38,7 +66,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password">
+          <input type="password" name="password" class="form-control" placeholder="Password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -50,7 +78,7 @@
           </div>
           <!-- /.col -->
           <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            <button type="submit" name="login" class="btn btn-primary btn-block">Sign In</button>
           </div>
           <!-- /.col -->
         </div>
