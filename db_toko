@@ -16,6 +16,25 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`db_toko` /*!40100 DEFAULT CHARACTER SET
 
 USE `db_toko`;
 
+/*Table structure for table `products` */
+
+DROP TABLE IF EXISTS `products`;
+
+CREATE TABLE `products` (
+  `id_p` int NOT NULL,
+  `nama_p` varchar(50) DEFAULT NULL,
+  `harga_beli` double DEFAULT NULL,
+  `harga_jual` double DEFAULT NULL,
+  `stok` int DEFAULT NULL,
+  `status` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id_p`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*Data for the table `products` */
+
+insert  into `products`(`id_p`,`nama_p`,`harga_beli`,`harga_jual`,`stok`,`status`) values (1,'Dancow 70gr Vanilla',72000,85000,35,'1');
+insert  into `products`(`id_p`,`nama_p`,`harga_beli`,`harga_jual`,`stok`,`status`) values (2,'Ultra Milk 200ml Coklat',6500,9500,20,'0');
+
 /*Table structure for table `users` */
 
 DROP TABLE IF EXISTS `users`;
