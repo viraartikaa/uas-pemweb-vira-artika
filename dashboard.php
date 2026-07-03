@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['login'])) {
+    header("Location: login.php");
+    exit();
+}
+?>
 
 <!DOCTYPE html>
 <html>
@@ -24,7 +32,35 @@
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
+     
     <ul class="navbar-nav">
+      <ul class="navbar-nav ml-auto">
+      <li class="nav-item mr-3 mt-1">
+
+      <strong>
+
+      <i class="fas fa-user"></i>
+
+      <?php echo $_SESSION['username']; ?>
+
+      </strong>
+
+      </li>
+
+      <li class="nav-item">
+
+      <a href="logout.php"
+      class="btn btn-danger btn-sm"
+      onclick="return confirm('Apakah Anda yakin ingin logout?')">
+
+      <i class="fas fa-sign-out-alt"></i>
+      Logout
+
+      </a>
+
+      </li>
+
+      </ul>
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
       </li>
@@ -42,7 +78,7 @@
           <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block"><?php echo $_SESSION['username']; ?></a>
         </div>
       </div>
 
@@ -74,6 +110,12 @@
               </li>
             </ul>
           </li>
+          <li class="nav-item">
+        <a href="barang.php" class="nav-link">
+      <i class="far fa-circle nav-icon"></i>
+      <p>Data Barang</p>
+        </a>
+        </li>
           <li class="nav-header">TRANSAKSI</li>
           <li class="nav-item">
             <a href="" class="nav-link">
@@ -182,8 +224,8 @@
     $("#example1").DataTable();
     $('#example2').DataTable({
       "paging": true,
-      "lengthChange": false,
-      "searching": false,
+      "lengthChange": true,
+      "searching": true,
       "ordering": true,
       "info": true,
       "autoWidth": false,

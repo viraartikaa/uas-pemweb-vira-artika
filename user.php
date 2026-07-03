@@ -1,14 +1,20 @@
 <?php
-  session_start();
-  require_once "koneksi.php";
+session_start();
+require_once "koneksi.php";
 
-  // ambil data dari tbl user
-  $query = mysqli_query($conn,"SELECT * FROM users");
+// Cek login
+if (!isset($_SESSION['login'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// Ambil data user
+$query = mysqli_query($conn, "SELECT * FROM users ORDER BY id ASC");
 ?>
 
 <!DOCTYPE html>
 <html>
-<head>
+<head>    
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Project UAS</title>
@@ -31,6 +37,33 @@
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
+     <ul class="navbar-nav ml-auto">
+
+    <li class="nav-item mr-3 mt-1">
+    <strong>
+
+    <i class="fas fa-user"></i>
+
+    <?= $_SESSION['username']; ?>
+
+    </strong>
+    </li>
+
+    <li class="nav-item">
+
+    <a href="logout.php"
+    class="btn btn-danger btn-sm"
+    onclick="return confirm('Yakin logout?')">
+
+    <i class="fas fa-sign-out-alt"></i>
+
+    Logout
+
+    </a>
+
+    </li>
+
+    </ul>
     <ul class="navbar-nav">
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
@@ -49,7 +82,9 @@
           <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block">
+              <?= $_SESSION['username']; ?>
+          </a>
         </div>
       </div>
 
@@ -72,14 +107,23 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
+           <ul class="nav nav-treeview">
+
+            <li class="nav-item">
                 <a href="user.php" class="nav-link active">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Data User</p>
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Data User</p>
                 </a>
-              </li>
-            </ul>
+            </li>
+
+            <li class="nav-item">
+                <a href="barang.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Data Barang</p>
+                </a>
+            </li>
+
+        </ul>
           </li>
           <li class="nav-header">TRANSAKSI</li>
           <li class="nav-item">
@@ -138,10 +182,23 @@
       <div class="row">
         <div class="col-12">
           <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">DataTable with default features</h3>
-            </div>
-            <!-- /.card-header -->
+           <div class="card-header">
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <h3 class="card-title">Data User</h3>
+        </div>
+
+        <div class="col-md-6 text-right">
+            <a href="user_tambah.php" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Tambah Data
+            </a>
+        </div>
+
+    </div>
+
+</div>
             <div class="card-body">
             
             <!-- Buat Tabel -->
@@ -168,12 +225,137 @@
                 <td><?= htmlspecialchars($row['nama_lengkap']); ?></td>
                 <td><?= htmlspecialchars($row['status']); ?></td>
                 <td>
-                  <a href="user_edit.php?id=<? $row['id'];?>" class="btn btn-warning btn-sm">Edit</a>
-                  <a href="user_delete.php?id=<? $row['id'];?>" class="btn btn-danger btn-sm">Delete</a>
-
+                  <a href="#" class="btn btn-success btn-sm"
+                    data-toggle="modal"
+                    data-target="#editUser<?= $row['id']; ?>">
+                    <i class="fas fa-edit"></i> Edit
+                    </a>  
+                  <a href="user_delete.php?id=<?= $row['id']; ?>" class="btn btn-danger btn-sm"
+                  onclick="return confirm('Yakin ingin menghapus data ini?')">
+                      Delete
+                    </a>
                 </td>
-                <td></td>
               </tr>
+              <div class="modal fade" id="editUser<?= $row['id']; ?>" tabindex="-1">
+
+              <div class="modal-dialog">
+
+              <div class="modal-content">
+
+              <form action="action/ubah.php" method="POST">
+
+              <div class="modal-header">
+
+              <h5 class="modal-title">
+
+              Edit Data User
+
+              </h5>
+
+              <button type="button" class="close" data-dismiss="modal">
+
+              <span>&times;</span>
+
+              </button>
+
+              </div>
+
+              <div class="modal-body">
+
+              <input type="hidden"
+              name="id"
+              value="<?= $row['id']; ?>">
+
+              <div class="form-group">
+
+              <label>Nama Lengkap</label>
+
+              <input type="text"
+              name="nama_lengkap"
+              class="form-control"
+              value="<?= $row['nama_lengkap']; ?>"
+              required>
+
+              </div>
+
+              <div class="form-group">
+
+              <label>Username</label>
+
+              <input type="text"
+              name="username"
+              class="form-control"
+              value="<?= $row['username']; ?>"
+              required>
+
+              </div>
+
+              <div class="form-group">
+
+              <label>Password</label>
+
+              <input type="text"
+              name="password"
+              class="form-control"
+              value="<?= $row['password']; ?>"
+              required>
+
+              </div>
+
+              <div class="form-group">
+
+              <label>Status</label>
+
+              <select
+              name="status"
+              class="form-control">
+
+              <option value="Admin"
+              <?= $row['status']=="Admin"?"selected":"";?>>
+
+              Admin
+
+              </option>
+
+              <option value="Kasir"
+              <?= $row['status']=="Kasir"?"selected":"";?>>
+
+              Kasir
+
+              </option>
+
+              </select>
+
+              </div>
+
+              </div>
+
+              <div class="modal-footer">
+
+              <button type="submit"
+              class="btn btn-success">
+
+              Simpan Perubahan
+
+              </button>
+
+              <button type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal">
+
+              Batal
+
+              </button>
+
+              </div>
+
+              </form>
+
+              </div>
+
+              </div>
+
+              </div>
               <?php } ?>
             </tbody>  
           </table>
@@ -223,8 +405,8 @@
     $("#example1").DataTable();
     $('#example2').DataTable({
       "paging": true,
-      "lengthChange": false,
-      "searching": false,
+      "lengthChange": true,
+      "searching": true,
       "ordering": true,
       "info": true,
       "autoWidth": false,
